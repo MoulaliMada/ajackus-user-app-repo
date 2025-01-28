@@ -25,6 +25,7 @@ function UserList() {
         } else {
           // If not, initialize localStorage with API data
           localStorage.setItem("users", JSON.stringify(response.data));
+          setLocalUsers(response.data);
         }
       } catch (err) {
         setError("Failed to fetch users");
