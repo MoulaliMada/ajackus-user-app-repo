@@ -83,7 +83,7 @@ src/
 ├── components/        # Reusable React components
 │   ├── UserList.js    # Displays the list of users with options to edit or delete
 │   ├── UserForm.js    # Form to add or edit a user
-│   └── Pagination.js  # Handles pagination (if implemented)
+│   
 ├── services/
 │   └── api.js         # API utility to interact with JSONPlaceholder
 ├── App.js             # Main application component

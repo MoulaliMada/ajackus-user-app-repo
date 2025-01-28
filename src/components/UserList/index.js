@@ -5,12 +5,12 @@ import "./index.css";
 
 function UserList() {
   const [users, setUsers] = useState([]);
-  const [localUsers, setLocalUsers] = useState([]);
+  const [localUsers, setLocalUsers] = useState([]); // State to store users from localStorage
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(5); // Show 5 users per page
+  const [usersPerPage] = useState(5); // Show 5 users per page ,// Number of users to display per page
   const navigate = useNavigate();
-
+  // Fetch users from API or localStorage on component mount
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -19,9 +19,11 @@ function UserList() {
         );
         setUsers(response.data);
         if (localStorage.getItem("users")) {
+          // Check if "users" exists in localStorage
           const parsedData = JSON.parse(localStorage.getItem("users"));
-          setLocalUsers(parsedData);
+          setLocalUsers(parsedData); // If it exists, parse and set to localUsers state
         } else {
+          // If not, initialize localStorage with API data
           localStorage.setItem("users", JSON.stringify(response.data));
         }
       } catch (err) {
@@ -45,7 +47,7 @@ function UserList() {
       await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
       const usersData = localUsers.filter((user) => user.id !== id);
       setUsers(usersData);
-      setLocalUsers(usersData);
+      setLocalUsers(usersData); // Update local state and localStorage by removing the deleted user
       localStorage.setItem("users", JSON.stringify(usersData));
     } catch (err) {
       setError("Failed to delete user");
@@ -55,11 +57,13 @@ function UserList() {
   return (
     <div className="user-list">
       <h1>User Management</h1>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error">{error}</p>} {/* Display any errors */}
       <Link to="/add" className="button add-button">
-        Add User
+        Add User {/* Link to navigate to the Add User form */}
       </Link>
       <table>
+        {" "}
+        {/* Table to display user details */}
         <thead>
           <tr>
             <th>ID</th>
@@ -69,6 +73,8 @@ function UserList() {
           </tr>
         </thead>
         <tbody>
+          {" "}
+          {/* Iterate through the users to display rows */}
           {currentUsers.map((user) => (
             <tr key={user.id}>
               <td>{user.id}</td>
@@ -84,7 +90,6 @@ function UserList() {
           ))}
         </tbody>
       </table>
-
       {/* Pagination Controls */}
       <div className="pagination">
         {Array.from(
