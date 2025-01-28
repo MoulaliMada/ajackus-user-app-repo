@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import './index.css';
+import "./index.css";
 
 function UserList() {
   const [users, setUsers] = useState([]);
-  const [error, setError] = useState(null);
   const [localUsers, setLocalUsers] = useState([]);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(5); // Show 5 users per page
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +31,15 @@ function UserList() {
     fetchUsers();
   }, []);
 
+  // Calculate the indices of users to display on the current page
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = localUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+  // Change the page when a page number is clicked
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Handle user deletion
   const handleDelete = async (id) => {
     try {
       await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
@@ -58,7 +69,7 @@ function UserList() {
           </tr>
         </thead>
         <tbody>
-          {localUsers.map((user) => (
+          {currentUsers.map((user) => (
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.name}</td>
@@ -73,6 +84,24 @@ function UserList() {
           ))}
         </tbody>
       </table>
+
+      {/* Pagination Controls */}
+      <div className="pagination">
+        {Array.from(
+          { length: Math.ceil(localUsers.length / usersPerPage) },
+          (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => paginate(index + 1)}
+              className={`page-btn ${
+                currentPage === index + 1 ? "active" : ""
+              }`}
+            >
+              {index + 1}
+            </button>
+          )
+        )}
+      </div>
     </div>
   );
 }
